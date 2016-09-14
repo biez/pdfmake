@@ -254,7 +254,13 @@ function renderPages(pages, fontProvider, pdfKitDoc) {
           break;
         case 'endClip':
           endClip(pdfKitDoc);
-          break
+          break;
+        case 'beginVerticalAlign':
+          beginVerticalAlign(item.item, pdfKitDoc);
+          break;
+        case 'endVerticalAlign':
+          endVerticalAlign(item.item, pdfKitDoc);
+          break;
       }
     }
     if(page.watermark){
@@ -273,6 +279,28 @@ function beginClip(rect, pdfKitDoc) {
 
 function endClip(pdfKitDoc) {
   pdfKitDoc.restore();
+}
+
+function beginVerticalAlign(item, pdfKitDoc) {
+  switch(item.verticalAlign) {
+    case 'center':
+      pdfKitDoc.save();
+      pdfKitDoc.translate(0, -(item.nodeHeight - item.viewHeight) / 2);
+      break;
+    case 'bottom':
+      pdfKitDoc.save();
+      pdfKitDoc.translate(0, -(item.nodeHeight - item.viewHeight));
+      break;
+  }
+}
+
+function endVerticalAlign(item, pdfKitDoc) {
+  switch(item.verticalAlign) {
+    case 'center':
+    case 'bottom':
+      pdfKitDoc.restore();
+      break;
+  }
 }
 
 function renderLine(line, x, y, pdfKitDoc) {
